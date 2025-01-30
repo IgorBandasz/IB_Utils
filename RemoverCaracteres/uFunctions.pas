@@ -6,6 +6,8 @@ type
   TFunctions = class
   private
     { private declarations }
+    class function RemoverPosicaoString(const pTexto: string;
+                                        const pPosicao: Integer):string;
   protected
     { protected declarations }
   public
@@ -21,9 +23,9 @@ uses
   Classes;
 
 const
-  Acentos: array[0..25] of Char = ('á', 'à', 'ã', 'â', 'é', 'è', 'ê', 'í', 'ó', 'ô', 'õ', 'ú',
-                                   'Á', 'À', 'Ã', 'Â', 'É', 'È', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú',
-                                   'ç', 'Ç');
+  ComAcentos: array[0..25] of Char = ('á', 'à', 'ã', 'â', 'é', 'è', 'ê', 'í', 'ó', 'ô', 'õ', 'ú',
+                                      'Á', 'À', 'Ã', 'Â', 'É', 'È', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú',
+                                      'ç', 'Ç');
   SemAcentos: array[0..25] of Char = ('a', 'a', 'a', 'a', 'e', 'e', 'e', 'i', 'o', 'o', 'o', 'u',
                                       'A', 'A', 'A', 'A', 'E', 'E', 'E', 'I', 'O', 'O', 'O', 'U',
                                       'c', 'C');
@@ -46,10 +48,16 @@ begin
       begin
         lLinha := lStringList.Strings[lPos];
 
+        //Remover letras acentuadas
         for lPosLinha := 1 to Length(lLinha) do
-          for lPosArray := 0 to High(Acentos) do
-            if lLinha[lPosLinha] = Acentos[lPosArray] then
+          for lPosArray := 0 to High(ComAcentos) do
+            if lLinha[lPosLinha] = ComAcentos[lPosArray] then
               lLinha[lPosLinha] := SemAcentos[lPosArray];
+
+        //Remover acentos soltos
+        for lPosLinha := Length(lLinha) downto 1 do
+          if CharInSet(lLinha[lPosLinha], ['~','^','`','´']) then
+            lLinha := RemoverPosicaoString(lLinha, lPosLinha);
 
         lStringList.Strings[lPos] := lLinha;
       end;
@@ -80,9 +88,9 @@ begin
       begin
         lLinha := lStringList.Strings[lPos];
 
-        for lPosLinha := 1 to Length(lLinha) do
-          if lLinha[lPosLinha] = '''' then
-            lLinha := Copy(lLinha, 1, lPosLinha - 1) + Copy(lLinha, lPosLinha + 1, Length(lLinha) - lPosLinha);
+        for lPosLinha := Length(lLinha) downto 1  do
+          if CharInSet(lLinha[lPosLinha], ['''','"']) then
+            lLinha := RemoverPosicaoString(lLinha, lPosLinha);
 
         lStringList.Strings[lPos] := lLinha;
       end;
@@ -95,6 +103,12 @@ begin
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
   end;
+end;
+
+class function TFunctions.RemoverPosicaoString(const pTexto: string;
+  const pPosicao: Integer): string;
+begin
+  Result := Copy(pTexto, 1, pPosicao - 1) + Copy(pTexto, pPosicao + 1, Length(pTexto) - pPosicao);
 end;
 
 end.
