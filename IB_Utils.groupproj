@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{E3A1134A-6D71-4171-8EF6-12786BDB1CFF}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="RemoverCaracteres\RemoverCaracteres.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="AdicionarRegistro\install.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="RemoverCaracteres">
+        <MSBuild Projects="RemoverCaracteres\RemoverCaracteres.dproj"/>
+    </Target>
+    <Target Name="RemoverCaracteres:Clean">
+        <MSBuild Projects="RemoverCaracteres\RemoverCaracteres.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RemoverCaracteres:Make">
+        <MSBuild Projects="RemoverCaracteres\RemoverCaracteres.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="install">
+        <MSBuild Projects="AdicionarRegistro\install.dproj"/>
+    </Target>
+    <Target Name="install:Clean">
+        <MSBuild Projects="AdicionarRegistro\install.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="install:Make">
+        <MSBuild Projects="AdicionarRegistro\install.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="RemoverCaracteres;install"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="RemoverCaracteres:Clean;install:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="RemoverCaracteres:Make;install:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
